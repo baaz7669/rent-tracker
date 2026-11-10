@@ -1,3 +1,5 @@
+<p align="center"><img src="public/icon.svg" width="112" alt="Rent Tracker logo"></p>
+
 # Rent Tracker
 
 Free, offline rent tracking software for Windows, made for landlords and caretakers.

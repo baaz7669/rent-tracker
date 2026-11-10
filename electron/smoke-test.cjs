@@ -254,6 +254,24 @@ async function run(win) {
     }
   }
 
+  // New logo loads in the header (from the packaged files, over file://)
+  check('header logo loads', await js(`(document.querySelector('header img[src$="icon.svg"]')?.naturalWidth || 0) > 0`));
+
+  // Settings → Erase everything: safety backup first, then every record and the recent activity log are gone
+  await js(`[...document.querySelectorAll('button')].find((b) => b.innerText.trim() === 'Erase everything')?.click()`);
+  await wait(300);
+  await js(`(() => { __t.set(document.querySelector('input[placeholder="Type DELETE to confirm"]'), 'DELETE'); [...document.querySelectorAll('button')].find((b) => b.innerText.trim() === 'Permanently erase').click(); })()`);
+  await wait(1200);
+  dbNow = JSON.parse(fs.readFileSync(dbFile, 'utf8'));
+  const leftovers = ['units', 'tenancies', 'payments', 'charges', 'expenses', 'activity'].filter((k) => (dbNow[k] || []).length > 0);
+  const safetyBackups = fs.readdirSync(path.join(dataDir, 'backups')).filter((f) => f.includes('before-erase'));
+  const activityText = await js(`document.querySelector('section[aria-labelledby="activity-heading"]')?.innerText || ''`);
+  check(
+    'Erase everything removes all records and recent activity, after a safety backup',
+    leftovers.length === 0 && safetyBackups.length > 0 && !activityText.includes('Smoke repair') && dbNow.settings.currency,
+    { leftovers, safetyBackups, nextReceiptNo: dbNow.settings.nextReceiptNo }
+  );
+
   // Links must not open inside the app. (Plain http is denied without handing it to the browser,
   // so this check does not pop open a real browser tab.)
   await js(`window.open('http://localhost:9/', '_blank')`);

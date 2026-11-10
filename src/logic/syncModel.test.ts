@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { appendActivity, Collections, liveView, loadDeviceIdentity, MAX_ACTIVITY, nextReceiptNumber, stampChanges } from './syncModel';
+import { appendActivity, Collections, eraseAllRecords, liveView, loadDeviceIdentity, MAX_ACTIVITY, nextReceiptNumber, stampChanges } from './syncModel';
 import { Payment } from '../types';
 
 const empty = (): Collections => ({ units: [], tenancies: [], payments: [], charges: [], expenses: [] });
@@ -86,5 +86,37 @@ describe('device identity', () => {
     const b = loadDeviceIdentity(storage, () => 'dev-2');
     expect(a.id).toBe('dev-1');
     expect(b.id).toBe('dev-1');
+  });
+});
+
+describe('eraseAllRecords', () => {
+  const paid = (receiptNo: number, deletedAt?: number): Payment =>
+    ({ id: `p${receiptNo}`, receiptNo, receiptPrefix: 'R-', deletedAt }) as unknown as Payment;
+  const db = () => ({
+    ...empty(),
+    units: [{ id: 'u1', building: 'Tower', name: 'Flat 1', type: 'Flat' as const }],
+    payments: [paid(7), paid(9, 500)],
+    activity: [{ id: 'a', at: 1, deviceId: 'pc', summary: 'Added unit: Tower · Flat 1' }],
+    settings: { currency: 'OMR', receiptPrefix: 'R-', nextReceiptNo: 3 },
+    updatedAt: 1
+  });
+
+  it('removes every record, including hidden deletion markers, and clears recent activity', () => {
+    const out = eraseAllRecords(db(), 2000);
+    for (const name of ['units', 'tenancies', 'payments', 'charges', 'expenses'] as const) expect(out[name]).toEqual([]);
+    expect(out.activity).toEqual([]);
+    expect(out.updatedAt).toBe(2000);
+  });
+
+  it('keeps settings and continues receipt numbers after the highest one issued', () => {
+    const out = eraseAllRecords(db(), 2000);
+    expect(out.settings).toMatchObject({ currency: 'OMR', receiptPrefix: 'R-', nextReceiptNo: 10 });
+  });
+
+  it('does not change the database it was given', () => {
+    const before = db();
+    eraseAllRecords(before, 2000);
+    expect(before.units).toHaveLength(1);
+    expect(before.activity).toHaveLength(1);
   });
 });

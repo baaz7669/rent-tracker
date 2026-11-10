@@ -144,6 +144,35 @@ export function nextReceiptNumber(payments: Payment[], prefix: string, floor = 1
 }
 
 /* ------------------------------------------------------------------ */
+/* Erase everything                                                    */
+/* ------------------------------------------------------------------ */
+
+interface ErasableDb extends Collections {
+  activity: ActivityEntry[];
+  settings: { receiptPrefix?: string; nextReceiptNo?: number };
+  updatedAt: number;
+}
+
+/**
+ * Settings → Delete everything: removes every record (deletion markers included) and the recent activity log.
+ * Settings stay. Receipt numbering carries on after the highest number already issued, so a number is never reused.
+ */
+export function eraseAllRecords<T extends ErasableDb>(db: T, now: number): T {
+  const prefix = db.settings.receiptPrefix ?? 'R-';
+  return {
+    ...db,
+    units: [],
+    tenancies: [],
+    payments: [],
+    charges: [],
+    expenses: [],
+    activity: [],
+    settings: { ...db.settings, nextReceiptNo: nextReceiptNumber(db.payments, prefix, db.settings.nextReceiptNo || 1) },
+    updatedAt: now
+  };
+}
+
+/* ------------------------------------------------------------------ */
 /* Device identity (kept on the device, never synced)                  */
 /* ------------------------------------------------------------------ */
 

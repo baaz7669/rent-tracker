@@ -105,9 +105,7 @@ function MainLayout() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           {/* Logo & App Name */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2E3F8F] dark:bg-[#7D8CE8] text-white dark:text-[#10181D] flex items-center justify-center shadow-xs">
-              <Banknote className="w-6 h-6 stroke-[2.5]" />
-            </div>
+            <img src="./icon.svg" alt="" width={40} height={40} className="w-10 h-10 shrink-0 drop-shadow-sm" />
             <div>
               <h1 className="text-lg sm:text-xl font-black tracking-tight leading-none text-[#1B2B34] dark:text-[#E6EDF1]">
                 Rent Tracker

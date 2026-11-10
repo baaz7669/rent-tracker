@@ -37,7 +37,7 @@ import {
   settlementRecord,
   splitUnitView
 } from '../logic/tenancy';
-import { appendActivity, COLLECTIONS, DEVICE_KEY, DeviceIdentity, liveView, loadDeviceIdentity, nextReceiptNumber, stampChanges } from '../logic/syncModel';
+import { appendActivity, COLLECTIONS, DEVICE_KEY, DeviceIdentity, eraseAllRecords, liveView, loadDeviceIdentity, nextReceiptNumber, stampChanges } from '../logic/syncModel';
 import { incomingWins, SyncData } from '../logic/sync';
 import { BackupData } from '../logic/backup';
 
@@ -538,7 +538,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const eraseEverything = async () => {
-    commit((cur) => ({ ...cur, units: [], tenancies: [], payments: [], charges: [], expenses: [] }));
+    // A full wipe, not a normal edit: no deletion markers are kept and the activity log is cleared too.
+    const next = eraseAllRecords(dbRef.current, Date.now());
+    dbRef.current = next;
+    setRawDb(next);
+    saveDb(next);
   };
 
   const bulkImportUnits = async (newUnits: NewUnitInput[]): Promise<number> => insertUnits(newUnits);
