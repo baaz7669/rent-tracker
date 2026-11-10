@@ -1,0 +1,84 @@
+{
+  "name": "rent-tracker",
+  "productName": "Rent Tracker",
+  "description": "Offline rent tracking for landlords: automatic dues, one-tap collection, WhatsApp reminders and lease alerts.",
+  "author": "Muhammad Shahbaz Arshad",
+  "private": true,
+  "version": "1.5.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite --port=3000 --host=0.0.0.0",
+    "dev:local": "vite --port=3000 --host=127.0.0.1 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "tsc --noEmit",
+    "build:web": "vite build",
+    "test": "vitest run",
+    "desktop": "vite build && electron .",
+    "smoke": "vite build && electron electron/smoke-test.cjs",
+    "dist:win": "vite build && electron-builder --win nsis portable --publish never",
+    "release": "npm test && vite build && electron-builder --win nsis --publish always"
+  },
+  "build": {
+    "appId": "com.renttracker.desktop",
+    "productName": "Rent Tracker",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "!electron/smoke-test.cjs",
+      "package.json"
+    ],
+    "win": {
+      "icon": "public/icon-512.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Rent Tracker"
+    },
+    "portable": {
+      "artifactName": "Rent Tracker ${version} Portable.exe"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "YOUR_GITHUB_USERNAME",
+        "repo": "rent-tracker-releases",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@fontsource-variable/figtree": "^5.3.0",
+    "@supabase/supabase-js": "2.118.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "autoprefixer": "^10.4.21",
+    "electron": "^45.2.3",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.0",
+    "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^4.1.12"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  },
+  "license": "MIT"
+}

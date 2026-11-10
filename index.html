@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rent Tracker</title>
+    <meta name="description" content="Track rent, auto-generate dues, record payments with one tap, send WhatsApp reminders, and monitor lease expiries for landlords and caretakers across buildings." />
+    <meta property="og:title" content="Rent Tracker" />
+    <meta property="og:description" content="Track rent, auto-generate dues, record payments with one tap, send WhatsApp reminders, and monitor lease expiries for landlords and caretakers across buildings." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- Figtree is bundled locally (@fontsource-variable/figtree) so the app works fully offline -->
+
+    <!-- PWA Web App Manifest & Mobile Meta -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#2E3F8F" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Rent Tracker" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('rent_tracker_theme');
+          var isDark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+
+      // Service worker = offline support for the browser version only (not possible over file:// in the desktop app)
+      if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('./sw.js').catch(function(err) {
+            console.warn('Service worker registration failed:', err);
+          });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --bg-main: #EDF1F4;
+    --bg-panel: #FFFFFF;
+    --text-main: #1B2B34;
+    --text-muted: #5E6E78;
+    --border-color: #D5DDE3;
+    --brand-color: #2E3F8F;
+    --brand-hover: #243273;
+    --overdue-red: #B4341F;
+    --overdue-red-bg: #FDEDEB;
+    --paid-green: #1F7A4D;
+    --paid-green-bg: #E8F7EE;
+    --warning-amber: #9A6A00;
+    --warning-amber-bg: #FEF8E7;
+  }
+
+  .dark {
+    --bg-main: #10181D;
+    --bg-panel: #18232A;
+    --text-main: #E6EDF1;
+    --text-muted: #8E9EA8;
+    --border-color: #2B3A44;
+    --brand-color: #7D8CE8;
+    --brand-hover: #98A5F2;
+    --overdue-red: #FF8A73;
+    --overdue-red-bg: #381A15;
+    --paid-green: #6CD39B;
+    --paid-green-bg: #143523;
+    --warning-amber: #F0C15A;
+    --warning-amber-bg: #382B0E;
+  }
+
+  body {
+    font-family: 'Figtree Variable', 'Figtree', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Ensure minimum touch targets of 40px */
+button, input, select, textarea, a.tap-target {
+  min-height: 40px;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+
+  /* Hide non-printable app UI */
+  header, nav, footer, .no-print, button, input, select {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 10.5pt !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Reset modal overlay during print */
+  .lease-modal-overlay {
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .lease-modal-container {
+    position: static !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    display: block !important;
+  }
+
+  /* Dedicated A4 Print View with CSS Grid */
+  .lease-agreement-print-view {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    page-break-inside: auto;
+  }
+
+  /* Enforce CSS Grid display during print */
+  .lease-agreement-print-view .grid {
+    display: grid !important;
+  }
+
+  .printable-lease-agreement {
+    page-break-inside: auto;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Standalone printable documents (receipts, statements)              */
+/* Rendered by PrintPortal; only visible while body has .print-doc    */
+/* ------------------------------------------------------------------ */
+.print-doc-root {
+  display: none;
+}
+
+@page a5doc {
+  size: A5 portrait;
+  margin: 8mm;
+}
+
+@page a4doc {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  html:has(body.print-doc),
+  body.print-doc {
+    background: #ffffff !important;
+  }
+
+  body.print-doc #root {
+    display: none !important;
+  }
+
+  body.print-doc .print-doc-root {
+    display: block !important;
+    background: #ffffff;
+  }
+
+  body.print-a5 .print-doc-root {
+    page: a5doc;
+  }
+
+  body.print-a4 .print-doc-root {
+    page: a4doc;
+  }
+
+  /* The app-wide print rules hide header/footer; documents need theirs */
+  body.print-doc .print-doc-root header,
+  body.print-doc .print-doc-root footer {
+    display: flex !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Charts: colour roles (validated: dataviz reference palette slots 1-2 */
+/* pass all checks on #ffffff light and #18232A dark surfaces)         */
+/* ------------------------------------------------------------------ */
+.viz-root {
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --viz-grid: #d5dde3;
+  --viz-muted: #5e6e78;
+  --viz-hover: rgba(46, 63, 143, 0.06);
+}
+
+.dark .viz-root {
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --viz-grid: #2b3a44;
+  --viz-muted: #8e9ea8;
+  --viz-hover: rgba(125, 140, 232, 0.08);
+}

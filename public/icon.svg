@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="112" fill="#2E3F8F"/>
+  <!-- Banknote / Property Icon Motif -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="80" y="140" width="352" height="232" rx="28"/>
+    <circle cx="256" cy="256" r="48"/>
+    <path d="M140 210h.01M372 302h.01"/>
+  </g>
+</svg>
